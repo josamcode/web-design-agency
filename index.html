@@ -358,5 +358,46 @@
         once: true, // Run the animation only once
       });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.9/bundled/lenis.min.js"></script>
+    <script>
+      const lenis = new Lenis({
+        duration: 1.5,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: true,
+      });
+
+      function scrollToSection(index) {
+        const section = document.querySelector(`.section${index}`);
+        const offset = -100;
+        lenis.scrollTo(section, { offset });
+      }
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+
+      lenis.on("scroll", ({ scroll, limit, velocity }) => {
+        console.log(`موقع التمرير الحالي: ${scroll}, السرعة: ${velocity}`);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        const scrollAmount = 100;
+
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          lenis.scrollTo(window.scrollY + scrollAmount);
+        }
+
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          lenis.scrollTo(window.scrollY - scrollAmount);
+        }
+      });
+
+      requestAnimationFrame(raf);
+    </script>
   </body>
 </html>
